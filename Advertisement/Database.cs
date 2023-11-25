@@ -39,6 +39,20 @@ public struct prodRequest
 
 }
 
+public struct retrieved_Data
+{
+    public retrieved_Data()
+    {
+        avg_prod_price = double.MinValue;
+        subtotal = int.MinValue;
+        categ_freq = new Dictionary<string, int>();
+
+    }
+    public double avg_prod_price;
+    public float subtotal;
+    public Dictionary<string, int> categ_freq;
+}
+
 
 public static class DatabaseLib
 {
@@ -161,6 +175,41 @@ public static class DatabaseLib
         var user = context.Users.FirstOrDefault(u => u.Id == userId);
 
         return user;
+    }
+
+    public static retrieved_Data GetUserData(int userId)
+    {
+        using var context = DataContext.Instance;
+
+        var userData = new retrieved_Data();
+
+        var user = context.Users.FirstOrDefault(u => u.Id == userId);
+        if (user != null)
+        {
+            userData.subtotal = user.Subtotal;
+        }
+
+        var userPurchases = context.UserPurchases.Where(up => up.UserId == userId).ToList();
+        foreach (var purchase in userPurchases)
+        {
+            var category = CategoryNumberToString(purchase.CategoryShopped);
+            if (!userData.categ_freq.ContainsKey(category))
+            {
+                userData.categ_freq[category] = 1;
+            }
+            else
+            {
+                userData.categ_freq[category]++;
+            }
+        }
+
+        var averageProductPrice = context.UserPurchases
+            .Where(up => up.UserId == userId)
+            .Average(up => up.AvgProductPrice);
+
+        userData.avg_prod_price = averageProductPrice;
+
+        return userData;
     }
 }
 
