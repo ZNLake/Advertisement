@@ -18,5 +18,9 @@ namespace Models
         [Required]
         [Column("name")]
         public string Name { get; set; } = null!;
+
+        [Required]
+        [Column("subtotal")]
+        public float Subtotal { get; set; } = default(float);
     }
 }
