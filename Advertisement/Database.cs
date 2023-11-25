@@ -226,6 +226,19 @@ public static class DatabaseLib
             context.SaveChanges();
         }
     }
+
+    public static void IncrementConversions()
+    {
+        using var context = DataContext.Instance;
+
+        var monthlyStats = context.MonthlyStats.FirstOrDefault();
+
+        if (monthlyStats != null)
+        {
+            monthlyStats.Conversions += 1;
+            context.SaveChanges();
+        }
+    }
 }
 
 
