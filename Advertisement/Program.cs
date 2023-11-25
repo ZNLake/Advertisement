@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using Models;
 
 
+using Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
