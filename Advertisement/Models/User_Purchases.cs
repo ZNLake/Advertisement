@@ -19,7 +19,6 @@ namespace Models
         [Column("categoryShopped")]
         public int CategoryShopped { get; set; } = default(int);
 
-        [Key]
         [Required]
         [Column("frequencyShopped")]
         public int FrequencyShopped { get; set; } = default(int);
