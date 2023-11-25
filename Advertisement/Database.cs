@@ -10,15 +10,12 @@ using System.Linq;
 
 public struct cart_Product
 {
-
     public cart_Product(double prod_price, string prod_name, string prod_categ, string url = "")
     {
-
         this.prod_price = prod_price;
         this.prod_name = prod_name;
         this.prod_categ = prod_categ;
         this.url = url;
-
     }
 
     public double prod_price;
@@ -34,11 +31,10 @@ public struct prodRequest
         this.category = keys;
         this.avg_price = avg_price;
     }
+
     public List<string> category;
     public double avg_price;
-
 }
-
 
 public static class DatabaseLib
 {
@@ -163,5 +159,3 @@ public static class DatabaseLib
         return user;
     }
 }
-
-

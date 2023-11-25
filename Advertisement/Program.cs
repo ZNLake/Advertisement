@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Advertisement.Models;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,7 @@ app.MapGet("/", (IWebHostEnvironment env) =>
     return Results.File(filePath, "text/html");
 });
 
-app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
+app.MapGet("/api/ad/{width}/{height}/{id}", (int width, int height, int id) =>
 {
     var imageUrl = CustomerMarketingAlgorithm();
 
@@ -53,12 +54,12 @@ app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
 
 app.MapGet("/ad/clicked/{id}", (int id) =>
 {
-    // var productName = getProductNameFunction(id);
+    //var productName = getProductNameFunction(id);
     //var pageURL = "/api/" + productName;
 
     //call function to add click to stat
 
-    // Return the Product Page response
+    //Return the Product Page response
     //return Results.Redirect(pageURL);
 });
 
@@ -75,7 +76,7 @@ app.MapPost("/api/parsejson", async (HttpContext context) =>
             JsonElement root = doc.RootElement;
 
             // Dynamically determine the model based on the root element's properties
-            if (root.TryGetProperty("Id", out _))
+            if (root.TryGetProperty("image", out _))
             {
                 // Deserialize to Product model
                 var product = JsonSerializer.Deserialize<Product>(json, new JsonSerializerOptions
@@ -87,19 +88,7 @@ app.MapPost("/api/parsejson", async (HttpContext context) =>
 
                 return Results.Text($"Received product: {product.Name}");
             }
-            else if (root.TryGetProperty("SomeOtherProperty", out _))
-            {
-                // Deserialize to another model
-                var cart = JsonSerializer.Deserialize<Cart>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                // Process the other model data as needed
-
-                return Results.Text($"Received data: {cart.Id}");
-            }
-            else if (root.TryGetProperty("SomeOtherProperty", out _))
+            else if (root.TryGetProperty("name", out _))
             {
                 // Deserialize to another model
                 var user = JsonSerializer.Deserialize<User>(json, new JsonSerializerOptions
@@ -111,7 +100,7 @@ app.MapPost("/api/parsejson", async (HttpContext context) =>
 
                 return Results.Text($"Received data: {user.Name}");
             }
-            else if (root.TryGetProperty("SomeOtherProperty", out _))
+            else if (root.TryGetProperty("stats", out _))
             {
                 // Deserialize to another model
                 var category = JsonSerializer.Deserialize<Category>(json, new JsonSerializerOptions
@@ -122,18 +111,6 @@ app.MapPost("/api/parsejson", async (HttpContext context) =>
                 // Process the other model data as needed
 
                 return Results.Text($"Received data: {category.Name}");
-            }
-            else if (root.TryGetProperty("SomeOtherProperty", out _))
-            {
-                // Deserialize to another model
-                var cartProduct = JsonSerializer.Deserialize<Cart_Product>(json, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-                // Process the other model data as needed
-
-                return Results.Text($"Received data: {cartProduct.cart_id}");
             }
             else
             {
