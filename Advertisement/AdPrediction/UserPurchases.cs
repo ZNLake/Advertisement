@@ -5,6 +5,8 @@
 
 
 
+using Database;
+
 
 
 
@@ -24,10 +26,11 @@ namespace Advertisement.AdPrediction
 
         }
 
-        public double prod_price;
-        public string prod_name;
-        public string prod_categ;
-        public string url;
+        public double prod_price { get; set; }
+        public string prod_name { get; set; }
+        public string prod_categ { get; set; }
+        public string url { get; set; }
+
     }
 
     public struct retrieved_Data
@@ -36,13 +39,25 @@ namespace Advertisement.AdPrediction
         public retrieved_Data()
         {
             avg_prod_price = double.MinValue;
-            subtotal = float.MinValue;
+            subtotal = double.MinValue;
             categ_freq = new Dictionary<string, int>();
 
         }
         public double avg_prod_price;
-        public float subtotal;
+        public double subtotal;
         public Dictionary<string, int> categ_freq;
+
+    }
+
+    public struct prodRequest
+    {
+        public prodRequest(List<string> keys, double avg_price)
+        {
+            this.category = keys;
+            this.avg_price = avg_price;
+        }
+        public List<string> category;
+        public double avg_price;
 
     }
 
@@ -59,24 +74,27 @@ namespace Advertisement.AdPrediction
         protected double historical_avg_prod_price;
         protected double historical_subtotal;
 
-        protected UserPurchases()
-        {
-            //load historical data and product freqeuency from database
-        }
-
-        protected UserPurchases(int user_id)
+     
+        protected UserPurchases(int user_id, bool is_new_user)
         {
             this.user_id = user_id;
             session_avg_product_price = 0;
             session_subtotal = 0;
+            //check if this is a new user to see if we have to retrieve
 
-            retrieved_Data userHistory = new retrieved_Data();
-            // retrieved_Data hist_data = isaac function 
-
-            //use struct to store data histroical ata
-            historical_avg_prod_price = 0;
-            historical_subtotal = 0;
-            category_frequency.Clear();
+            if(!is_new_user)
+            {
+                retrieved_Data user_history = new retrieved_Data();
+                user_history = DatabaseLib.GetUserData(user_id);
+                historical_avg_prod_price = user_history.avg_prod_price;
+                historical_subtotal = user_history.subtotal;
+                category_frequency = user_history.categ_freq;
+            }else
+            {
+                historical_avg_prod_price = double.MinValue;
+                historical_subtotal = double.MinValue;
+            }
+          
         }
 
         public void AddFrequency(List<cart_Product> session_purchases)
@@ -99,7 +117,7 @@ namespace Advertisement.AdPrediction
             }
         }
 
-      
+
         public void calculateAverages(string subtotal, List<cart_Product> products)
         {
             int historical_count = 0;
@@ -114,47 +132,26 @@ namespace Advertisement.AdPrediction
 
             historical_avg_prod_price = (session_subtotal + historical_subtotal) / (products.Count() + historical_count);
         }
-    }
 
-
-    //class that uses UserPurchases data to predict and send correct ads to Cart and Product pages 
-    public class AdPrediction : UserPurchases
-    {
-        public struct prodRequest
+        string requestAd(int width, int height)
         {
-            public prodRequest(List<string> keys, double avg_price)
-            {
-                this.category = keys;
-                this.avg_price = avg_price;
-            }
-            public List<string> category;
-            public double avg_price;
+            int ad_width = width;
+            int ad_height = height;
+        
 
-        }
-
-
-        AdPrediction()
-        {
-
-
-        }
-        string requestAd()
-        {
-
-            //if existing user
             category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             var count = 2;
+            List<cart_Product> predicted_ads = new List<cart_Product>();
             prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
-            //call ad generator
+            predicted_ads = DatabaseLib.GetClosestPricedProducts(new_prods);
 
-            //else
-            // request random ad generator
 
-            // return provided ad to zeb 
 
             return "string";
 
         }
-
     }
 }
+
+
+
