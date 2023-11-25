@@ -7,20 +7,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    [Table("category")]
-    public class Category
+    [Table("user_purchases")]
+    public class UserPurchases
     {
         [Key]
         [Required]
-        [Column("id")]
-        public int Id { get; set; } = default(int);
+        [Column("userId")]
+        public int UserId { get; set; } = default(int);
 
         [Required]
-        [Column("name")]
-        public string Name { get; set; } = null!;
+        [Column("categoryShopped")]
+        public int CategoryShopped { get; set; } = default(int);
+
+        [Key]
+        [Required]
+        [Column("frequencyShopped")]
+        public int FrequencyShopped { get; set; } = default(int);
 
         [Required]
-        [Column("stats")]
-        public string Stats { get; set; } = null!;
+        [Column("avgProductPrice")]
+        public float AvgProductPrice { get; set; } = default(float);
     }
 }
