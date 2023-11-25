@@ -1,4 +1,12 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Advertisement;
+using Microsoft.AspNetCore.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
+using System.Security.Cryptography;
+using Models;
+using ImageTransformer;
+
 using Database;
 using Models;
 using Advertisement.AdPrediction;
@@ -128,16 +136,21 @@ app.MapPost("/api/parsejson", async (HttpContext context) =>
             }
         }
     }
-});
+}); string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
 
 app.Run();
+string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
 
 // this would be the path the code takes if the customer user id is provided
 static string CustomerMarketingAlgorithm()
 {
+
+
+
     Console.WriteLine("CustomerMarketingAlgorithm called");
 
     // the image url would be a dynamic image src gathered from the algorithm (and database if required) returning the correct image for the ad spot
     var imageUrl = "https://picsum.photos/650/250.jpg";
     return imageUrl;
+
 }
