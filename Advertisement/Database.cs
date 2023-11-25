@@ -48,7 +48,7 @@ public static class DatabaseLib
         return resultArray;
     }
 
-    public static product GetProductById(int productId)
+    public static Product GetProductById(int productId)
     {
         using var context = DataContext.Instance;
 

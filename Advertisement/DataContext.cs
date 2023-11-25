@@ -18,7 +18,9 @@ public class DataContext : DbContext
         }
     }
 
-    public DataContext() { }
+    public DataContext()
+    { }
+
     public DbSet<MonthlyStats> MonthlyStats { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
@@ -31,7 +33,7 @@ public class DataContext : DbContext
     {
         var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
 
-        optionsBuilder.UseMySql("projectvgroup2-db.cfl4q3qmo0sa.us-east-2.rds.amazonaws.com;user=admin;password=seaottersarecool;database=projectiv", serverVersion, options => {
+        optionsBuilder.UseMySql("Server=projectvgroup2-db.cfl4q3qmo0sa.us-east-2.rds.amazonaws.com;Port=3306;Database=projectv-analysis-db;User=admin;Password=seaottersarecool;", serverVersion, options => {
             options.EnableStringComparisonTranslations();
         });
     }
