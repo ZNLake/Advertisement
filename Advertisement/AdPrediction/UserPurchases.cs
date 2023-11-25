@@ -122,17 +122,17 @@ namespace Advertisement.AdPrediction
             historical_avg_prod_price = (session_subtotal + historical_subtotal) / (products.Count() + historical_count);
         }
 
-        //Image requestAd(int width, int height)
-        //{
-        //    category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-        //    var count = 2;
-        //    List<cart_Product> predicted_ads = new List<cart_Product>();
-        //    prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
-        //    predicted_ads = DatabaseLib.GetClosestPricedProducts(new_prods);
+        Image requestAd(int width, int height)
+        {
+            category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+            var count = 2;
+            List<cart_Product> predicted_ads = new List<cart_Product>();
+            prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
+            predicted_ads = DatabaseLib.GetClosestPricedProducts(new_prods);
 
-        //    AdCreative.AdCreativeTransformer(width, height, predicted_ads);
-        //    return AdCreative.ReturnAd(predicted_ads[0].prod_name);
+            AdCreative.AdCreativeTransformer(width, height, predicted_ads);
+            return AdCreative.RequestSpecificAd(predicted_ads[0].prod_name);
 
-        //}
+        }
     }
 }
