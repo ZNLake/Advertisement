@@ -7,53 +7,10 @@ using Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Linq;
+using Advertisement.AdPrediction;
 
 namespace Database;
 
-public struct cart_Product
-{
-
-    public cart_Product(double prod_price, string prod_name, string prod_categ, string url = "")
-    {
-
-        this.prod_price = prod_price;
-        this.prod_name = prod_name;
-        this.prod_categ = prod_categ;
-        this.url = url;
-
-    }
-
-    public double prod_price;
-    public string prod_name;
-    public string prod_categ;
-    public string url;
-}
-
-public struct prodRequest
-{
-    public prodRequest(List<string> keys, double avg_price)
-    {
-        this.category = keys;
-        this.avg_price = avg_price;
-    }
-    public List<string> category;
-    public double avg_price;
-
-}
-
-public struct retrieved_Data
-{
-    public retrieved_Data()
-    {
-        avg_prod_price = double.MinValue;
-        subtotal = int.MinValue;
-        categ_freq = new Dictionary<string, int>();
-
-    }
-    public double avg_prod_price;
-    public float subtotal;
-    public Dictionary<string, int> categ_freq;
-}
 
 
 public static class DatabaseLib
