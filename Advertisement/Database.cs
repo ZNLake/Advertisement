@@ -211,6 +211,19 @@ public static class DatabaseLib
 
         return userData;
     }
+
+    public static void IncrementClicks()
+    {
+        using var context = DataContext.Instance;
+
+        var monthlyStats = context.MonthlyStats.FirstOrDefault();
+
+        if (monthlyStats != null)
+        {
+            monthlyStats.Clicks += 1;
+            context.SaveChanges();
+        }
+    }
 }
 
 
