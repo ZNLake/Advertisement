@@ -239,6 +239,23 @@ public static class DatabaseLib
             context.SaveChanges();
         }
     }
+
+    public static void CreateUser(int userId)
+    {
+        using var context = DataContext.Instance;
+
+        if (context.Users.Any(u => u.Id == userId))
+        {
+            return;
+        }
+        var newUser = new User
+        {
+            Id = userId,
+        };
+
+        context.Users.Add(newUser);
+        context.SaveChanges();
+    }
 }
 
 
