@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.IO;
-using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using System.Security.Cryptography;
+﻿using Advertisement.AdPrediction;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
