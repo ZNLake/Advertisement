@@ -36,12 +36,12 @@ namespace Advertisement.AdPrediction
         public retrieved_Data()
         {
             avg_prod_price = double.MinValue;
-            subtotal = int.MinValue;
+            subtotal = float.MinValue;
             categ_freq = new Dictionary<string, int>();
 
         }
         public double avg_prod_price;
-        public int subtotal;
+        public float subtotal;
         public Dictionary<string, int> categ_freq;
 
     }

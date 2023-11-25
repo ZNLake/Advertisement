@@ -1,10 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using System.IO;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using Advertisement.Models;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Storage;
+using Database;
+using Models;
+using Advertisement.AdPrediction;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,40 +24,52 @@ app.MapGet("/", (IWebHostEnvironment env) =>
     // Read the content of the HTML file
     var htmlContent = File.ReadAllText(filePath);
 
-    // var CoversionClickDataset = getStatsFunction;
+    var ConversionClickDataset = JsonSerializer.Serialize(DatabaseLib.GetMonthlyStats());
 
     // Generate JavaScript code with the initialized variable
-    // var javascriptCode = $"<script>var CoversionClickDataset = '{CoversionClickDataset}';</script>";
+    var javascriptCode = $"<script>var ConversionClickDataset = '{ConversionClickDataset}';</script>";
 
     // Insert the JavaScript code into the HTML content
-    //htmlContent = htmlContent.Replace("</head>", $"{javascriptCode}</head>");
+    htmlContent = htmlContent.Replace("</head>", $"{javascriptCode}</head>");
 
     // Return the HTML file
-    // return Results.Content(htmlContent, "text/html")l
+    return Results.Content(htmlContent, "text/html");
 
-    return Results.File(filePath, "text/html");
+    //return Results.File(filePath, "text/html");
 });
 
 app.MapGet("/api/ad/{width}/{height}/{id}", (int width, int height, int id) =>
 {
-    var imageUrl = CustomerMarketingAlgorithm();
+    var imageURL = CustomerMarketingAlgorithm();
+
+    // Create algorithm class with given paramaters
+    //var image = UserPurchases(width, height, user);
 
     // Prepare the HTML response with an image (and id temporarily for testing purposes)
-    var htmlResponse = $"<a href=\"{imageUrl}\"><img src=\"{imageUrl}\" alt=\"Ad Image\" width=\"{width}\" height=\"{height}\"></a>";
+    //var htmlResponse = $"<a href=\"{image}\"><img src=\"{image}\" alt=\"Ad Image\" width=\"{width}\" height=\"{height}\"></a>";
 
     // Return the HTML response
-    return Results.Redirect(imageUrl);
+    return Results.Redirect(imageURL);
 });
 
 app.MapGet("/ad/clicked/{id}", (int id) =>
 {
-    //var productName = getProductNameFunction(id);
+    var productName = DatabaseLib.GetProductById(id);
     //var pageURL = "/api/" + productName;
 
-    //call function to add click to stat
+    //call function to increment clicks
+    DatabaseLib.IncrementClicks();
 
     //Return the Product Page response
     //return Results.Redirect(pageURL);
+});
+
+app.MapPost("/ad/converted", () =>
+{
+    //call function to increment Conversions
+    DatabaseLib.IncrementConversions();
+
+    return Results.Ok();
 });
 
 app.MapPost("/api/parsejson", async (HttpContext context) =>
