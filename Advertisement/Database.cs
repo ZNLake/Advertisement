@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Linq;
 
+namespace Database;
+
 public struct cart_Product
 {
 
@@ -225,5 +227,6 @@ public static class DatabaseLib
         }
     }
 }
+
 
 

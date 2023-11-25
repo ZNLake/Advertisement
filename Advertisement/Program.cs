@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Advertisement.Models;
 using Microsoft.AspNetCore.Diagnostics;
 
+using Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
