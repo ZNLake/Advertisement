@@ -6,10 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Security.Cryptography;
 using Models;
 using ImageTransformer;
-
 using Database;
-
-using Models;
 
 using Advertisement.AdPrediction;
 
@@ -25,8 +22,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+app.MapGet("/", () =>
+{
+    return Results.Redirect("/10");
+});
 
-app.MapGet("/", (IWebHostEnvironment env) =>
+app.MapGet("/{id}", (IWebHostEnvironment env, int id) =>
 {
     // Path to your HTML file
     var filePath = Path.Combine(env.ContentRootPath, "wwwroot", "index.html");

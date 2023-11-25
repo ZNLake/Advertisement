@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
-
 namespace ImageTransformer
 {
     public static class AdCreative
@@ -17,7 +16,6 @@ namespace ImageTransformer
                 using (HttpResponseMessage response = await client.GetAsync(url))
                 using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
                 {
-
                 }
             }
             Image imageProduct = Image.FromFile("AdCreatives/product.png");
@@ -30,8 +28,6 @@ namespace ImageTransformer
                 gr.DrawString('$' + prod_price, new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, (Height / 10)));
                 gr.DrawString(prod_name, new Font("Verdana", 24), Brushes.Black, new PointF((Width / 10) + 20, Height / 10));
                 gr.DrawString(prod_categ, new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, Height / 10 + 10));
-
-
             }
             img.Save("AdCreatives/" + prod_name + "_ad.png", ImageFormat.Png);
         }
@@ -41,6 +37,7 @@ namespace ImageTransformer
             Image ad = Image.FromFile("AdCreatives/" + image + "_ad.png");
             return ad;
         }
+
         public static Image RequestRandomAd() //return a random ad in image format from the AdCreatives folder
         {
             var rand = new Random();
@@ -49,9 +46,8 @@ namespace ImageTransformer
             return image;
         }
 
-        public static Bitmap ResizeImage(Image image, int Width, int Height) //helper 
+        public static Bitmap ResizeImage(Image image, int Width, int Height) //helper
         {
-
             var destRect = new Rectangle(0, 0, Width, Height);
             var destImage = new Bitmap(Width, Height);
 
