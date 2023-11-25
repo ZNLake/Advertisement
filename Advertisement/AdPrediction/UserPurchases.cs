@@ -3,12 +3,9 @@
 //tailored ads to an existing user who has made purchases and random ads to a
 //new/existing user
 
-
-
 using Database;
-
-
-
+using ImageTransformer;
+using System.Drawing;
 
 namespace Advertisement.AdPrediction
 {
@@ -32,6 +29,7 @@ namespace Advertisement.AdPrediction
         public string url { get; set; }
 
     }
+
 
     public struct retrieved_Data
     {
@@ -80,8 +78,8 @@ namespace Advertisement.AdPrediction
             this.user_id = user_id;
             session_avg_product_price = 0;
             session_subtotal = 0;
-            //check if this is a new user to see if we have to retrieve
 
+            //check if this is a new user to see if we have to retrieve
             if(!is_new_user)
             {
                 retrieved_Data user_history = new retrieved_Data();
@@ -93,6 +91,7 @@ namespace Advertisement.AdPrediction
             {
                 historical_avg_prod_price = double.MinValue;
                 historical_subtotal = double.MinValue;
+                DatabaseLib.CreateUser(user_id);
             }
           
         }
@@ -117,7 +116,6 @@ namespace Advertisement.AdPrediction
             }
         }
 
-
         public void calculateAverages(string subtotal, List<cart_Product> products)
         {
             int historical_count = 0;
@@ -133,21 +131,16 @@ namespace Advertisement.AdPrediction
             historical_avg_prod_price = (session_subtotal + historical_subtotal) / (products.Count() + historical_count);
         }
 
-        string requestAd(int width, int height)
+        Image requestAd(int width, int height)
         {
-            int ad_width = width;
-            int ad_height = height;
-        
-
             category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             var count = 2;
             List<cart_Product> predicted_ads = new List<cart_Product>();
             prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
             predicted_ads = DatabaseLib.GetClosestPricedProducts(new_prods);
 
-
-
-            return "string";
+            AdCreative.AdCreativeTransformer(width, height, predicted_ads);    
+            return AdCreative.ReturnAd(predicted_ads[0].prod_name);
 
         }
     }
