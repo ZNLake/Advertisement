@@ -3,14 +3,31 @@
 <head>
     <title>Seller Marketing Page</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <style>
+        /* Remove underline from all anchor tags within the navbar */
+        .navbar a {
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body class="body">
     <div class="navbar" style="display:flex;">
         <img src="logo.png" alt="Page logo" class="left" style="width: 5%; height:5%;" />
-        <span class="navbar-value">Cart</span>
-        <span class="navbar-value">Profile</span>
-        <span class="navbar-value">Home</span>
-        <span class="navbar-value">Analytics</span>
+        <a href="/cart">
+            <span class="navbar-value">Cart</span>
+        </a>
+
+        <a href="/profile">
+            <span class="navbar-value">Profile</span>
+        </a>
+
+        <a href="/home">
+            <span class="navbar-value">Home</span>
+        </a>
+
+        <a href="/analytics">
+            <span class="navbar-value">Analytics</span>
+        </a>
     </div>
     <div style="
         margin-top: 40px;
@@ -20,19 +37,13 @@
         justify-content: space-evenly;
       ">
         <div class="container">
-            <span class="container-heading">
-                Total Clicks:<br />
-                100
-            </span>
+            <span class="container-heading" id="totalClicks"></span>
         </div>
         <div class="container">
-            <span class="container-heading">
-                Total Conversions:<br />
-                100
-            </span>
+            <span class="container-heading" id="totalConversions"></span>
         </div>
         <div class="container">
-            <span class="container-heading">Total Efficacy:<br />100%</span>
+            <span class="container-heading" id="totalEfficacy"></span>
         </div>
     </div>
     <div style="display: flex; justify-content: space-around">
@@ -42,16 +53,19 @@
                 style="max-width: 47.4%; max-height: 39.54%"></canvas>
     </div>
 
-    <div>
-        <p class="center" style="max-width: 650px; max-height: 250px">
-            <a href="https://picsum.photos/">
-                <img class="center"
-                     src="https://localhost:7015/api/ad/100/2001"
-                     style="width: auto; height: auto; border: 5px solid grey"
-                     alt="advertisement Image" />
-            </a>
+    <!--<div>
+        <p class="center" style="max-width: 650px; max-height: 250px;" id="dynamicContent">
         </p>
-    </div>
+    </div>-->
+
+    <p class="center" style="max-width: 650px; max-height: 250px">
+        <a href="https://picsum.photos/">
+            <img class="center"
+                 src="/api/ad/650/250"
+                 style="width: auto; height: auto; border: 5px solid grey"
+                 alt="advertisement Image" />
+        </a>
+    </p>
 
     <div class="footer">Copyright of class 2023 @ Conestoga College</div>
 </body>
@@ -60,6 +74,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <script>
+    // Fetch HTML content from the server
+    //fetch('/api/ad/650/250')
+    //    .then(response => response.text())
+    //    .then(htmlContent => {
+    //        // Inject the fetched HTML content into the element
+    //        document.getElementById('dynamicContent').innerHTML = htmlContent;
+    //    })
+    //    .catch(error => console.error('Error fetching HTML:', error));
+
+    // Set the href attribute of the anchor tag using the injected ID
+    //.getElementById('cartLink').href = '/' + id;
+
     //Multi line chart creation script
     const xValues = [
         "January",
@@ -79,22 +105,27 @@
     // Access the injected data
     console.log("ConversionClickDataset:", ConversionClickDataset);
 
+    const Dataset = Array.isArray(ConversionClickDataset) ? ConversionClickDataset : JSON.parse(ConversionClickDataset);
+
     // Now you can use ConversionClickDataset to populate your charts or perform other operations
     // Example: Log the first value
-    console.log("First value:", ConversionClickDataset[0]);
+    console.log("First value:", Dataset[0]);
 
-    // Calculate the middle index to split the array
-    const middleIndex = Math.floor(CoversionClickDataset.length / 2);
+    const conversions = [];
+    const clicks = [];
 
-    // Split the array into two halves
-    const conversionsData = CoversionClickDataset.slice(0, middleIndex);
-    const clicksData = CoversionClickDataset.slice(middleIndex);
+    // Use a loop to iterate through ConversionClickDataset
+    for (let i = 0; i < Dataset.length; i++) {
+        // Check if the index is even (every other element)
+        if (i % 2 === 0) {
+            clicks.push(Dataset[i]);
+        } else {
+            conversions.push(Dataset[i]);
+        }
+    }
 
-    // Extract every 2nd element in conversionsData
-    const conversions = conversionsData.filter((_, index) => index % 2 === 1);
-
-    // Extract every other element in clicksData
-    const clicks = clicksData.filter((_, index) => index % 2 === 0);
+    console.log("Conversions:", conversions);
+    console.log("Clicks:", clicks);
 
     new Chart("lineChart", {
         type: "line",
@@ -139,10 +170,19 @@
         "November",
         "December",
     ];
-    var efficacy = conversions.map((conversion, index) => conversion / clicks[index]);
+
+    if (conversions && clicks && conversions.length === clicks.length) {
+        var efficacy = conversions.map((conversion, index) => {
+            const clicksValue = clicks[index];
+            return clicksValue !== 0 ? conversion / clicksValue : 0;
+        });
+    } else {
+        console.error("Arrays must be defined and have the same length");
+    }
+
     var barColors = ["red", "green", "blue", "orange", "brown", "purple", "yellow"];
 
-    console.log(efficacy);
+    console.log("Efficacy:", efficacy);
 
     new Chart("barChart", {
         type: "bar",
@@ -169,6 +209,19 @@
             },
         },
     });
+
+    const totalClicks = clicks.reduce((acc, click) => acc + click, 0);
+    const totalConversions = conversions.reduce((acc, conversion) => acc + conversion, 0);
+    const averageEfficacy = efficacy.length > 0 ? efficacy.reduce((acc, value) => acc + value, 0) / efficacy.length : 0;
+
+    // Update Total Clicks
+    document.getElementById('totalClicks').innerHTML = `Total Clicks:<br />${totalClicks}`;
+
+    // Update Total Conversions
+    document.getElementById('totalConversions').innerHTML = `Total Conversions:<br />${totalConversions}`;
+
+    // Update Total Efficacy
+    document.getElementById('totalEfficacy').innerHTML = `Average Efficacy:<br />${averageEfficacy.toFixed(2)}%`;
 </script>
 
 <style>

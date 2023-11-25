@@ -8,7 +8,9 @@ using Models;
 using ImageTransformer;
 
 using Database;
+
 using Models;
+
 using Advertisement.AdPrediction;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,15 +48,50 @@ app.MapGet("/", (IWebHostEnvironment env) =>
     //return Results.File(filePath, "text/html");
 });
 
-app.MapGet("/api/ad/{width}/{height}/{id}", (int width, int height, int id) =>
+app.MapGet("/cart", (int id) =>
 {
-    var imageURL = CustomerMarketingAlgorithm();
+    //var pageURL = "/api/" + productName;
+
+    //Return the Page response
+    //return Results.Redirect(pageURL);
+});
+
+app.MapGet("/profile", (int id) =>
+{
+    //var pageURL = "/api/" + productName;
+
+    //Return the Page response
+    //return Results.Redirect(pageURL);
+});
+
+app.MapGet("/home", (int id) =>
+{
+    //var pageURL = "/api/" + productName;
+
+    //Return the Page response
+    //return Results.Redirect(pageURL);
+});
+
+app.MapGet("/analytics", (int id) =>
+{
+    //var pageURL = "/api/" + productName;
+
+    //Return the Page response
+    //return Results.Redirect(pageURL);
+});
+
+app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
+{
+    var imageURL = CustomerMarketingAlgorithm(width, height);
 
     // Create algorithm class with given paramaters
     //var image = UserPurchases(width, height, user);
 
     // Prepare the HTML response with an image (and id temporarily for testing purposes)
-    //var htmlResponse = $"<a href=\"{image}\"><img src=\"{image}\" alt=\"Ad Image\" width=\"{width}\" height=\"{height}\"></a>";
+    //var htmlResponse = $"<a href=\"{imageURL}\"><img src=\"{imageURL}\" alt=\"Ad Image\" width=\"{width}\" height=\"{height}\"></a>";
+
+    // Return the HTML response
+    //return Results.Content(htmlResponse, "text/html");
 
     // Return the HTML response
     return Results.Redirect(imageURL);
@@ -142,15 +179,11 @@ app.Run();
 string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
 
 // this would be the path the code takes if the customer user id is provided
-static string CustomerMarketingAlgorithm()
+static string CustomerMarketingAlgorithm(int width, int height)
 {
-
-
-
     Console.WriteLine("CustomerMarketingAlgorithm called");
 
     // the image url would be a dynamic image src gathered from the algorithm (and database if required) returning the correct image for the ad spot
-    var imageUrl = "https://picsum.photos/650/250.jpg";
+    var imageUrl = "https://picsum.photos/" + width + "/" + height + ".jpg";
     return imageUrl;
-
 }
