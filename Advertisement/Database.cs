@@ -91,7 +91,7 @@ public static class DatabaseLib
         return resultArray;
     }
 
-    public static Product GetProductById(int productId)
+    public static product GetProductById(int productId)
     {
         using var context = DataContext.Instance;
 
@@ -148,6 +148,7 @@ public static class DatabaseLib
         return category;
     }
 
+    
     // finds 2 closest priced items within category and return the product struct
     // Needs the products and prodRequest classes to fix errors
     public static List<cart_Product> GetClosestPricedProducts(prodRequest request)
@@ -161,6 +162,7 @@ public static class DatabaseLib
             .ToList();
 
         productsInCategory.Sort((p1, p2) =>
+    
             Math.Abs(p1.Price - request.avg_price).CompareTo(Math.Abs(p2.Price - request.avg_price))
         );
 
