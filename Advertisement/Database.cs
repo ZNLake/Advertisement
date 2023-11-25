@@ -6,6 +6,38 @@ using System.Numerics;
 using Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
+using System.Linq;
+
+public struct cart_Product
+{
+
+    public cart_Product(double prod_price, string prod_name, string prod_categ, string url = "")
+    {
+
+        this.prod_price = prod_price;
+        this.prod_name = prod_name;
+        this.prod_categ = prod_categ;
+        this.url = url;
+
+    }
+
+    public double prod_price;
+    public string prod_name;
+    public string prod_categ;
+    public string url;
+}
+
+public struct prodRequest
+{
+    public prodRequest(List<string> keys, double avg_price)
+    {
+        this.category = keys;
+        this.avg_price = avg_price;
+    }
+    public List<string> category;
+    public double avg_price;
+
+}
 
 
 public static class DatabaseLib
@@ -13,6 +45,19 @@ public static class DatabaseLib
     // function that takes an array and fills it with each row in monthly stats
     // [0, 1, 2, 3, 4, 5]
     // [month1clicks, month1conversions, month2clicks, month2conversions, month3clicks, month3conversions]
+
+    public static string CategoryNumberToString(int categoryId)
+    {
+        using var context = DataContext.Instance;
+
+        var categoryName = context.Categories
+        .Where(c => c.Id == categoryId)
+        .Select(c => c.Name)
+        .FirstOrDefault();
+
+        return categoryName;
+    }
+
     public static int[] GetMonthlyStats()
     {
         using var context = DataContext.Instance;
@@ -90,24 +135,34 @@ public static class DatabaseLib
     
     // finds 2 closest priced items within category and return the product struct
     // Needs the products and prodRequest classes to fix errors
-    public static List<product> GetClosestPricedProducts(prodRequest request)
+    public static List<cart_Product> GetClosestPricedProducts(prodRequest request)
     {
         using var context = DataContext.Instance;
 
-        var closestPricedProducts = new List<product>();
+        var closestPricedProducts = new List<cart_Product>();
 
         var productsInCategory = context.Products
-            .Where(p => request.category.Contains(p.Category))
+            .Where(p => request.category.Contains(CategoryNumberToString(p.Category)))
             .ToList();
 
         productsInCategory.Sort((p1, p2) =>
     
             Math.Abs(p1.Price - request.avg_price).CompareTo(Math.Abs(p2.Price - request.avg_price))
         );
-        closestPricedProducts.Add(new product(productsInCategory[0].Pid, productsInCategory[0].Price, productsInCategory[0].Name, productsInCategory[0].Category, productsInCategory[0].Image));
-        closestPricedProducts.Add(new product(productsInCategory[1].Pid, productsInCategory[1].Price, productsInCategory[1].Name, productsInCategory[1].Category, productsInCategory[1].Image));
+
+        closestPricedProducts.Add(new cart_Product(productsInCategory[0].Price, productsInCategory[0].Name, CategoryNumberToString(productsInCategory[0].Category), productsInCategory[0].Image));
+        closestPricedProducts.Add(new cart_Product(productsInCategory[1].Price, productsInCategory[1].Name, CategoryNumberToString(productsInCategory[1].Category), productsInCategory[1].Image));
 
         return closestPricedProducts;
+    }
+
+    public static User GetUserById(int userId)
+    {
+        using var context = DataContext.Instance;
+
+        var user = context.Users.FirstOrDefault(u => u.Id == userId);
+
+        return user;
     }
 }
 
