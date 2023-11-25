@@ -33,7 +33,7 @@ public class DataContext : DbContext
     {
         var serverVersion = new MySqlServerVersion(new Version(8, 0, 28));
 
-        optionsBuilder.UseMySql("Server=projectvgroup2-db.cfl4q3qmo0sa.us-east-2.rds.amazonaws.com;Port=3306;Database=projectiv;User=admin;Password=seaottersarecool;", serverVersion, options => {
+        optionsBuilder.UseMySql("Server=projectvgroup2-db.cfl4q3qmo0sa.us-east-2.rds.amazonaws.com;Port=3306;Database=projectv-analysis-db;User=admin;Password=seaottersarecool;", serverVersion, options => {
             options.EnableStringComparisonTranslations();
         });
     }
