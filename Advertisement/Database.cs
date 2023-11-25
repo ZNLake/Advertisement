@@ -30,7 +30,7 @@ public static class DatabaseLib
         return resultArray;
     }
 
-    public static Product GetProductById(int productId)
+    public static product GetProductById(int productId)
     {
         using var context = DataContext.Instance;
 
@@ -87,23 +87,25 @@ public static class DatabaseLib
         return category;
     }
 
+    
     // finds 2 closest priced items within category and return the product struct
     // Needs the products and prodRequest classes to fix errors
-    public static List<products> GetClosestPricedProducts(prodRequest request)
+    public static List<product> GetClosestPricedProducts(prodRequest request)
     {
         using var context = DataContext.Instance;
 
-        var closestPricedProducts = new List<products>();
+        var closestPricedProducts = new List<product>();
 
         var productsInCategory = context.Products
             .Where(p => request.category.Contains(p.Category))
             .ToList();
 
         productsInCategory.Sort((p1, p2) =>
+    
             Math.Abs(p1.Price - request.avg_price).CompareTo(Math.Abs(p2.Price - request.avg_price))
         );
-        closestPricedProducts.Add(new products(productsInCategory[0].Pid, productsInCategory[0].Price, productsInCategory[0].Name, productsInCategory[0].Category, productsInCategory[0].Image));
-        closestPricedProducts.Add(new products(productsInCategory[1].Pid, productsInCategory[1].Price, productsInCategory[1].Name, productsInCategory[1].Category, productsInCategory[1].Image));
+        closestPricedProducts.Add(new product(productsInCategory[0].Pid, productsInCategory[0].Price, productsInCategory[0].Name, productsInCategory[0].Category, productsInCategory[0].Image));
+        closestPricedProducts.Add(new product(productsInCategory[1].Pid, productsInCategory[1].Price, productsInCategory[1].Name, productsInCategory[1].Category, productsInCategory[1].Image));
 
         return closestPricedProducts;
     }

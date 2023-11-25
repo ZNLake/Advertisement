@@ -4,6 +4,10 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Advertisement.Models;
 using Microsoft.AspNetCore.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
+using System.Security.Cryptography;
+using Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

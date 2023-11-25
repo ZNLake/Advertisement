@@ -149,7 +149,7 @@ namespace Advertisement.AdPrediction
 
             //else
             // request random ad generator
-
+            // requestAd();
             // return provided ad to zeb 
 
             return "string";
