@@ -3,24 +3,110 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Net;
 using System.Numerics;
-using Advertisement.Models;
+using Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 
-namespace Advertisement
+
+public static class DatabaseLib
 {
-    public static class DatabaseLib
+    // function that takes an array and fills it with each row in monthly stats
+    // [0, 1, 2, 3, 4, 5]
+    // [month1clicks, month1conversions, month2clicks, month2conversions, month3clicks, month3conversions]
+    public static int[] GetMonthlyStats()
     {
-        public static void Shell()
-        {
-            using var context = DataContext.Instance;
+        using var context = DataContext.Instance;
 
-            context.SaveChanges();
+        var statsList = context.MonthlyStats.ToList();
+
+        int[] resultArray = new int[statsList.Count * 2];
+
+        for (int i = 0; i < statsList.Count; i++)
+        {
+            resultArray[i * 2] = statsList[i].Clicks;
+            resultArray[i * 2 + 1] = statsList[i].Conversions;
         }
+
+        return resultArray;
+    }
+
+    public static Product GetProductById(int productId)
+    {
+        using var context = DataContext.Instance;
+
+        var product = context.Products.FirstOrDefault(p => p.Pid == productId);
+
+        return product;
+    }
+
+    public static string GetProductImageById(int productId)
+    {
+        using var context = DataContext.Instance;
+
+        var product = context.Products.FirstOrDefault(p => p.Pid == productId);
+        if (product != null)
+        {
+            return product.Image;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static string GetProductImageByName(string productName)
+    {
+        using var context = DataContext.Instance;
+
+        var product = context.Products.FirstOrDefault(p => string.Equals(p.Name, productName));
+        if (product != null)
+        {
+            return product.Image;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static Category GetCategoryById(int id)
+    {
+        using var context = DataContext.Instance;
+
+        var category = context.Categories.FirstOrDefault(c => c.Id == id);
+
+        return category;
+    }
+
+    public static Category GetCategoryByName(string categoryName)
+    {
+        using var context = DataContext.Instance;
+
+        var category = context.Categories.FirstOrDefault(c => c.Name == categoryName);
+
+        return category;
+    }
+
+    // finds 2 closest priced items within category and return the product struct
+    // Needs the products and prodRequest classes to fix errors
+    public static List<products> GetClosestPricedProducts(prodRequest request)
+    {
+        using var context = DataContext.Instance;
+
+        var closestPricedProducts = new List<products>();
+
+        var productsInCategory = context.Products
+            .Where(p => request.category.Contains(p.Category))
+            .ToList();
+
+        productsInCategory.Sort((p1, p2) =>
+            Math.Abs(p1.Price - request.avg_price).CompareTo(Math.Abs(p2.Price - request.avg_price))
+        );
+        closestPricedProducts.Add(new products(productsInCategory[0].Pid, productsInCategory[0].Price, productsInCategory[0].Name, productsInCategory[0].Category, productsInCategory[0].Image));
+        closestPricedProducts.Add(new products(productsInCategory[1].Pid, productsInCategory[1].Price, productsInCategory[1].Name, productsInCategory[1].Category, productsInCategory[1].Image));
+
+        return closestPricedProducts;
     }
 }
 
-//namespace Advertisement
-//{
-//    public class Database
-//    {
-//    }
-//}
+
