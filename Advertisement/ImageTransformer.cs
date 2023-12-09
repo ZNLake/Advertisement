@@ -15,7 +15,7 @@ namespace ImageTransformer
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    using (HttpResponseMessage response = await client.GetAsync(prod_info[0].url))
+                    using (HttpResponseMessage response = await client.GetAsync(c.url))
                     using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
                     {
                     }
@@ -27,11 +27,11 @@ namespace ImageTransformer
                 {
                     gr.DrawImage(imageAdTemplate, new Point(0, 0));
                     gr.DrawImage(imageProduct, new Point(0, 0));
-                    gr.DrawString('$' + prod_info[0].prod_price.ToString(), new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, (Height / 10)));
-                    gr.DrawString(prod_info[0].prod_name, new Font("Verdana", 24), Brushes.Black, new PointF((Width / 10) + 20, Height / 10));
-                    gr.DrawString(prod_info[0].prod_categ, new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, Height / 10 + 10));
+                    gr.DrawString('$' + c.prod_price.ToString(), new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, (Height / 10)));
+                    gr.DrawString(c.prod_name, new Font("Verdana", 24), Brushes.Black, new PointF((Width / 10) + 20, Height / 10));
+                    gr.DrawString(c.prod_categ, new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, Height / 10 + 10));
                 }
-                img.Save("AdCreatives/" + prod_info[0].prod_name + "_ad.png", ImageFormat.Png);
+                img.Save("AdCreatives/" + c.prod_name + "_ad.png", ImageFormat.Png);
             }
         }
 
