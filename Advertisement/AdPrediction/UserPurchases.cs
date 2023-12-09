@@ -132,7 +132,7 @@ namespace Advertisement.AdPrediction
           
             var count = 2;
             List<cart_Product> predicted_ads = new List<cart_Product>();
-            if(category_frequency.Any())
+            if (category_frequency.Any())
             {
                 category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
@@ -142,14 +142,11 @@ namespace Advertisement.AdPrediction
             }
             else
             {
-                    
-                var generic_ad = DatabaseLib.TopClicks();
-                await AdCreative.AdCreativeTransformer(width, height, predicted_ads);
-                return AdCreative.RequestSpecificAd(generic_ad[0].prod_name);
-            }
-           
 
-          
+                var generic_ad = DatabaseLib.TopClicks();
+                await AdCreative.AdCreativeTransformer(width, height, generic_ad);
+                return AdCreative.RequestSpecificAd(generic_ad[0].prod_name);
+            }            
 
         }
     }
