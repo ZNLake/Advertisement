@@ -48,16 +48,23 @@ public static class DatabaseLib
         return resultArray;
     }
 
-    public static Product GetProductById(int productId)
+    public static Product GetProductById(string productId)
     {
         using var context = DataContext.Instance;
 
         var product = context.Products.FirstOrDefault(p => p.Pid == productId);
 
-        return product;
+        if (product != null)
+        {
+            return product;
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public static string GetProductImageById(int productId)
+    public static string GetProductImageById(string productId)
     {
         using var context = DataContext.Instance;
 

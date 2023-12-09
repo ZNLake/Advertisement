@@ -13,7 +13,7 @@ namespace Models
         [Key]
         [Required]
         [Column("pid")]
-        public int Pid { get; set; } = default(int);
+        public string Pid { get; set; } = null!;
 
         [Required]
         [Column("sid")]
