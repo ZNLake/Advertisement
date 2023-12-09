@@ -238,6 +238,26 @@ public static class DatabaseLib
             return "";
         }
     }
+
+    public static List<cart_Product> TopClicks()
+    {
+        using var context = DataContext.Instance;
+
+        var topClicked = context.Products
+            .OrderByDescending(p => p.Clicked)
+            .Take(2)
+            .Select(p => new cart_Product
+            {
+                prod_price = p.Price,
+                prod_name = p.Name, 
+                prod_categ = CategoryNumberToString(p.Category),
+                url = p.Image      
+            })
+            .ToList();
+
+        return topClicked;
+    }
+
 }
 
 
