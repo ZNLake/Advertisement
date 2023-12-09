@@ -85,12 +85,12 @@ app.MapGet("/{id}", (IWebHostEnvironment env, string id) =>
     //return Results.File(filePath, "text/html");
 });
 
-app.MapGet("/api/ad/{width}/{height}/{id}", (int width, int height, int id) =>
+app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
 {
     var imageUrl = DatabaseLib.SearchProductByDimensions(height, width);
     if (imageUrl != "")
     {
-        Advertisement.AdPrediction.UserPurchases test = new Advertisement.AdPrediction.UserPurchases(id);
+        //Advertisement.AdPrediction.UserPurchases test = new Advertisement.AdPrediction.UserPurchases(id);
         imageUrl = DatabaseLib.GetProductImageById(imageUrl);
         return Results.Redirect(imageUrl);
     }
