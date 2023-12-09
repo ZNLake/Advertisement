@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Seller Marketing Page</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="http://localhost:5198/internal/favicon" />
     <style>
         /* Remove underline from all anchor tags within the navbar */
         .navbar a {
@@ -12,13 +12,18 @@
 </head>
 <body class="body">
     <div class="navbar" style="display:flex;">
-        <img src="logo.png" alt="Page logo" class="left" style="width: 5%; height:5%;" />
+        <img src="http://localhost:5198/internal/logo" alt="Page logo" class="left" style="width: 5%; height:5%;" />
 
-        <a href="/profile">
+        <a href="https://sprint1deploymentgroup1.azurewebsites.net/Profile/{profileID}">
             <span class="navbar-value">Profile</span>
         </a>
-
-        <a href="/analytics">
+        <a href="http://172.105.25.146:8081/index.html?uid={id}">
+            <span class="navbar-value">Home</span>
+        </a>
+        <a href="https://shoppingcart.honeybeeks.net/">
+            <span class="navbar-value">Cart</span>
+        </a>
+        <a href="http://172.105.25.146:8080/ ​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​">
             <span class="navbar-value">Analytics</span>
         </a>
     </div>
@@ -173,7 +178,7 @@
         console.error("Arrays must be defined and have the same length");
     }
 
-    var barColors = ["red", "green", "blue", "orange", "brown", "purple", "yellow", "maroon", "beige", "teal", "violet", "SlateBlue"];
+    var barColors = ["red", "green", "blue", "orange", "brown", "purple", "yellow", "maroon", "beige", "teal", "violet", "grey"];
 
     console.log("Efficacy:", efficacy);
 

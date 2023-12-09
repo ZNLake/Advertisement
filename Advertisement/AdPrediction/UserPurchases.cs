@@ -14,16 +14,19 @@ namespace Advertisement.AdPrediction
     {
         public cart_Product(double prod_price, string prod_name, string prod_categ, string url = "")
         {
+        
             this.prod_price = prod_price;
             this.prod_name = prod_name;
             this.prod_categ = prod_categ;
             this.url = url;
         }
 
+       
         public double prod_price { get; set; }
         public string prod_name { get; set; }
         public string prod_categ { get; set; }
         public string url { get; set; }
+
     }
 
     public struct retrieved_Data
@@ -47,10 +50,12 @@ namespace Advertisement.AdPrediction
         {
             this.category = keys;
             this.avg_price = avg_price;
+           
         }
 
         public List<string> category;
         public double avg_price;
+  
     }
 
     //class that runs simple calculations and monitors category frequency
@@ -58,7 +63,7 @@ namespace Advertisement.AdPrediction
     {
         protected int user_id;
 
-        protected Dictionary<string, int> category_frequency = new Dictionary<string, int>();
+        protected Dictionary<string,int> category_frequency = new Dictionary<string, int> ();
 
         protected double session_avg_product_price;
         protected double session_subtotal;
@@ -122,16 +127,26 @@ namespace Advertisement.AdPrediction
             historical_avg_prod_price = (session_subtotal + historical_subtotal) / (products.Count() + historical_count);
         }
 
-        Image requestAd(int width, int height)
+       public async Task<Image> requestAd (int width=0, int height=0)
         {
-            category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+          
             var count = 2;
             List<cart_Product> predicted_ads = new List<cart_Product>();
-            prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
-            predicted_ads = DatabaseLib.GetClosestPricedProducts(new_prods);
+            if (category_frequency.Any())
+            {
+                category_frequency = category_frequency.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                prodRequest new_prods = new prodRequest(category_frequency.Keys.Take(count).ToList(), historical_avg_prod_price); ;
+                predicted_ads = DatabaseLib.GetClosestPricedProducts(new_prods);
+                await AdCreative.AdCreativeTransformer(width, height, predicted_ads);
+                return AdCreative.RequestSpecificAd(predicted_ads[0].prod_name);
+            }
+            else
+            {
 
-            AdCreative.AdCreativeTransformer(width, height, predicted_ads);
-            return AdCreative.RequestSpecificAd(predicted_ads[0].prod_name);
+                var generic_ad = DatabaseLib.TopClicks();
+                await AdCreative.AdCreativeTransformer(width, height, generic_ad);
+                return AdCreative.RequestSpecificAd(generic_ad[0].prod_name);
+            }            
 
         }
     }
