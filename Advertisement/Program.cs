@@ -9,6 +9,7 @@ using ImageTransformer;
 using Database;
 
 using Advertisement.AdPrediction;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +25,46 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.MapGet("/", () =>
 {
-    return Results.Redirect("/10");
+    return Results.Redirect("/U1");
 });
 
-app.MapGet("/{id}", (IWebHostEnvironment env, int id) =>
+app.MapGet("/internal/logo", () =>
+{
+    var imagePath = "logo.png";
+
+    // Check if the file exists
+    if (System.IO.File.Exists(imagePath))
+    {
+        // Return the image file using PhysicalFile result
+        // return new PhysicalFileResult(imagePath, "image/png"); // Adjust the content type as needed
+        return Results.File(imagePath, "image/png");
+    }
+    else
+    {
+        // If the file doesn't exist, return a 404 Not Found response or handle it accordingly
+        return Results.NotFound();
+    }
+});
+
+app.MapGet("/internal/favicon", () =>
+{
+    var imagePath = "favicon.ico";
+
+    // Check if the file exists
+    if (System.IO.File.Exists(imagePath))
+    {
+        // Return the image file using PhysicalFile result
+        // return new PhysicalFileResult(imagePath, "image/png"); // Adjust the content type as needed
+        return Results.File(imagePath, "image/ico");
+    }
+    else
+    {
+        // If the file doesn't exist, return a 404 Not Found response or handle it accordingly
+        return Results.NotFound();
+    }
+});
+
+app.MapGet("/{id}", (IWebHostEnvironment env, string id) =>
 {
     // Path to your HTML file
     var filePath = Path.Combine(env.ContentRootPath, "wwwroot", "index.html");
@@ -43,42 +80,16 @@ app.MapGet("/{id}", (IWebHostEnvironment env, int id) =>
     // Insert the JavaScript code into the HTML content
     htmlContent = htmlContent.Replace("</head>", $"{javascriptCode}</head>");
 
+    // Replace the placeholder in the HTML content with the actual id
+    htmlContent = htmlContent.Replace("{id}", id);
+
+    // Replace the placeholder in the HTML content with the actual id
+    htmlContent = htmlContent.Replace("{profileID}", id);
+
     // Return the HTML file
     return Results.Content(htmlContent, "text/html");
 
     //return Results.File(filePath, "text/html");
-});
-
-app.MapGet("/cart", (int id) =>
-{
-    //var pageURL = "/api/" + productName;
-
-    //Return the Page response
-    //return Results.Redirect(pageURL);
-});
-
-app.MapGet("/profile", (int id) =>
-{
-    //var pageURL = "/api/" + productName;
-
-    //Return the Page response
-    //return Results.Redirect(pageURL);
-});
-
-app.MapGet("/home", (int id) =>
-{
-    //var pageURL = "/api/" + productName;
-
-    //Return the Page response
-    //return Results.Redirect(pageURL);
-});
-
-app.MapGet("/analytics", (int id) =>
-{
-    //var pageURL = "/api/" + productName;
-
-    //Return the Page response
-    //return Results.Redirect(pageURL);
 });
 
 app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
