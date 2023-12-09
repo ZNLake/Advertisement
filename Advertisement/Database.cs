@@ -227,7 +227,7 @@ public static class DatabaseLib
     {
         using var context = DataContext.Instance;
 
-        var product = context.Products.FirstOrDefault(u => u.height == height && u.width == width);
+        var product = context.Products.FirstOrDefault(u => u.Height == height && u.Width == width);
 
         if (product != null)
         {

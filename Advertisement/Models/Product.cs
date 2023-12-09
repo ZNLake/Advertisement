@@ -56,12 +56,12 @@ namespace Models
         public int Clicked { get; set; } = default(int);
 
         [Required]
-        [Column("clicked")]
-        public int height { get; set; } = default(int);
+        [Column("height")]
+        public int Height { get; set; } = default(int);
 
         [Required]
-        [Column("clicked")]
-        public int width { get; set; } = default(int);
+        [Column("width")]
+        public int Width { get; set; } = default(int);
 
     }
 }
