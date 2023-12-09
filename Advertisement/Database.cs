@@ -222,6 +222,22 @@ public static class DatabaseLib
         context.Users.Add(newUser);
         context.SaveChanges();
     }
+
+    public static string SearchProductByDimensions(int height, int width)
+    {
+        using var context = DataContext.Instance;
+
+        var product = context.Products.FirstOrDefault(u => u.height == height && u.width == width);
+
+        if (product != null)
+        {
+            return product.Pid;
+        }
+        else
+        {
+            return "";
+        }
+    }
 }
 
 
