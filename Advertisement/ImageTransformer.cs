@@ -10,26 +10,29 @@ namespace ImageTransformer
         public static async Task AdCreativeTransformer(int Width, int Height, List<cart_Product> prod_info) //takes in a product image url, overlays ad creative, saves final ad as ad output.png within AdCreatives folder
         {
             //ROOT DIRECTORY : \ProjectVAdvertisement\Advertisement
-            Image imageAdTemplate = Image.FromFile("AdCreatives/overlay.png"); //TODO: default working directory unknown, file paths inaccurate
-            using (HttpClient client = new HttpClient())
+            Image imageAdTemplate = Image.FromFile("AdCreatives/overlay.png");
+            foreach (cart_Product c in prod_info)
             {
-                using (HttpResponseMessage response = await client.GetAsync(prod_info[0].url))
-                using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                using (HttpClient client = new HttpClient())
                 {
+                    using (HttpResponseMessage response = await client.GetAsync(prod_info[0].url))
+                    using (Stream streamToReadFrom = await response.Content.ReadAsStreamAsync())
+                    {
+                    }
                 }
+                Image imageProduct = Image.FromFile("AdCreatives/product.png");
+                ResizeImage(imageProduct, Width, Height);
+                Image img = new Bitmap(imageAdTemplate.Width, imageAdTemplate.Height);
+                using (Graphics gr = Graphics.FromImage(img))
+                {
+                    gr.DrawImage(imageAdTemplate, new Point(0, 0));
+                    gr.DrawImage(imageProduct, new Point(0, 0));
+                    gr.DrawString('$' + prod_info[0].prod_price.ToString(), new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, (Height / 10)));
+                    gr.DrawString(prod_info[0].prod_name, new Font("Verdana", 24), Brushes.Black, new PointF((Width / 10) + 20, Height / 10));
+                    gr.DrawString(prod_info[0].prod_categ, new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, Height / 10 + 10));
+                }
+                img.Save("AdCreatives/" + prod_info[0].prod_name + "_ad.png", ImageFormat.Png);
             }
-            Image imageProduct = Image.FromFile("AdCreatives/product.png");
-            ResizeImage(imageProduct, Width, Height);
-            Image img = new Bitmap(imageAdTemplate.Width, imageAdTemplate.Height);
-            using (Graphics gr = Graphics.FromImage(img))
-            {
-                gr.DrawImage(imageAdTemplate, new Point(0, 0));
-                gr.DrawImage(imageProduct, new Point(0, 0));
-                gr.DrawString('$' + prod_info[0].prod_price.ToString(), new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, (Height / 10)));
-                gr.DrawString(prod_info[0].prod_name, new Font("Verdana", 24), Brushes.Black, new PointF((Width / 10) + 20, Height / 10));
-                gr.DrawString(prod_info[0].prod_categ, new Font("Verdana", 24), Brushes.Black, new PointF(Width / 10, Height / 10 + 10));
-            }
-            img.Save("AdCreatives/" + prod_info[0].prod_name + "_ad.png", ImageFormat.Png);
         }
 
         public static Image RequestSpecificAd(string image) //return a specific image using image name (prod_name)
