@@ -14,19 +14,16 @@ namespace Advertisement.AdPrediction
     {
         public cart_Product(double prod_price, string prod_name, string prod_categ, string url = "")
         {
-        
             this.prod_price = prod_price;
             this.prod_name = prod_name;
             this.prod_categ = prod_categ;
             this.url = url;
         }
 
-       
         public double prod_price { get; set; }
         public string prod_name { get; set; }
         public string prod_categ { get; set; }
         public string url { get; set; }
-
     }
 
     public struct retrieved_Data
@@ -50,12 +47,10 @@ namespace Advertisement.AdPrediction
         {
             this.category = keys;
             this.avg_price = avg_price;
-           
         }
 
         public List<string> category;
         public double avg_price;
-  
     }
 
     //class that runs simple calculations and monitors category frequency
@@ -63,14 +58,14 @@ namespace Advertisement.AdPrediction
     {
         protected int user_id;
 
-        protected Dictionary<string,int> category_frequency = new Dictionary<string, int> ();
+        protected Dictionary<string, int> category_frequency = new Dictionary<string, int>();
 
         protected double session_avg_product_price;
         protected double session_subtotal;
         protected double historical_avg_prod_price;
         protected double historical_subtotal;
 
-        protected UserPurchases(int user_id, bool is_new_user)
+        public UserPurchases(int user_id, bool is_new_user = true)
         {
             this.user_id = user_id;
             session_avg_product_price = 0;
@@ -127,9 +122,8 @@ namespace Advertisement.AdPrediction
             historical_avg_prod_price = (session_subtotal + historical_subtotal) / (products.Count() + historical_count);
         }
 
-       public async Task<Image> requestAd (int width=0, int height=0)
+        public async Task<Image> requestAd(int width = 0, int height = 0)
         {
-          
             var count = 2;
             List<cart_Product> predicted_ads = new List<cart_Product>();
             if (category_frequency.Any())
@@ -142,12 +136,10 @@ namespace Advertisement.AdPrediction
             }
             else
             {
-
                 var generic_ad = DatabaseLib.TopClicks();
                 await AdCreative.AdCreativeTransformer(width, height, generic_ad);
                 return AdCreative.RequestSpecificAd(generic_ad[0].prod_name);
-            }            
-
+            }
         }
     }
 }

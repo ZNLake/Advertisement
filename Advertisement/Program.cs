@@ -1,15 +1,8 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using Advertisement;
-using Microsoft.AspNetCore.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
-using System.Security.Cryptography;
 using Models;
-using ImageTransformer;
 using Database;
 
 using Advertisement.AdPrediction;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,9 +85,20 @@ app.MapGet("/{id}", (IWebHostEnvironment env, string id) =>
     //return Results.File(filePath, "text/html");
 });
 
-app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
+app.MapGet("/api/ad/{width}/{height}/{id}", (int width, int height, int id) =>
 {
-    var imageURL = CustomerMarketingAlgorithm(width, height);
+    var imageUrl = DatabaseLib.SearchProductByDimensions(height, width);
+    if (imageUrl != "")
+    {
+        Advertisement.AdPrediction.UserPurchases test = new Advertisement.AdPrediction.UserPurchases(id);
+        imageUrl = DatabaseLib.GetProductImageById(imageUrl);
+        return Results.Redirect(imageUrl);
+    }
+    else
+    {
+        imageUrl = "https://picsum.photos/" + width + "/" + height + ".jpg";
+        return Results.Redirect(imageUrl);
+    }
 
     // Create algorithm class with given paramaters
     //var image = UserPurchases(width, height, user);
@@ -106,19 +110,18 @@ app.MapGet("/api/ad/{width}/{height}", (int width, int height) =>
     //return Results.Content(htmlResponse, "text/html");
 
     // Return the HTML response
-    return Results.Redirect(imageURL);
 });
 
-app.MapGet("/ad/clicked/{id}", (int id) =>
+app.MapGet("/ad/clicked", (string id) =>
 {
-    var productName = DatabaseLib.GetProductById(id);
+    //var productName = DatabaseLib.GetProductById(id);
     //var pageURL = "/api/" + productName;
 
     //call function to increment clicks
     DatabaseLib.IncrementClicks();
 
     //Return the Product Page response
-    //return Results.Redirect(pageURL);
+    return Results.Ok();
 });
 
 app.MapPost("/ad/converted", () =>
@@ -189,13 +192,3 @@ app.MapPost("/api/parsejson", async (HttpContext context) =>
 
 app.Run();
 string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
-
-// this would be the path the code takes if the customer user id is provided
-static string CustomerMarketingAlgorithm(int width, int height)
-{
-    Console.WriteLine("CustomerMarketingAlgorithm called");
-
-    // the image url would be a dynamic image src gathered from the algorithm (and database if required) returning the correct image for the ad spot
-    var imageUrl = "https://picsum.photos/" + width + "/" + height + ".jpg";
-    return imageUrl;
-}
