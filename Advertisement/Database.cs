@@ -48,16 +48,23 @@ public static class DatabaseLib
         return resultArray;
     }
 
-    public static Product GetProductById(int productId)
+    public static Product GetProductById(string productId)
     {
         using var context = DataContext.Instance;
 
         var product = context.Products.FirstOrDefault(p => p.Pid == productId);
 
-        return product;
+        if (product != null)
+        {
+            return product;
+        }
+        else
+        {
+            return null;
+        }
     }
 
-    public static string GetProductImageById(int productId)
+    public static string GetProductImageById(string productId)
     {
         using var context = DataContext.Instance;
 
@@ -215,6 +222,42 @@ public static class DatabaseLib
         context.Users.Add(newUser);
         context.SaveChanges();
     }
+
+    public static string SearchProductByDimensions(int height, int width)
+    {
+        using var context = DataContext.Instance;
+
+        var product = context.Products.FirstOrDefault(u => u.height == height && u.width == width);
+
+        if (product != null)
+        {
+            return product.Pid;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    public static List<cart_Product> TopClicks()
+    {
+        using var context = DataContext.Instance;
+
+        var topClicked = context.Products
+            .OrderByDescending(p => p.Clicked)
+            .Take(2)
+            .Select(p => new cart_Product
+            {
+                prod_price = p.Price,
+                prod_name = p.Name, 
+                prod_categ = CategoryNumberToString(p.Category),
+                url = p.Image      
+            })
+            .ToList();
+
+        return topClicked;
+    }
+
 }
 
 
